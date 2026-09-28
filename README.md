@@ -71,6 +71,16 @@ Reglas para las palabras:
 - `actualizar(fallo)` redibuja horca, intentos, palabra y teclas. Si hubo fallo, la horca vibra.
 - `jugar(letra)` conecta un clic o tecla con la lógica y refresca la pantalla.
 - `nuevaPartida()` reinicia la lógica y la interfaz.
+- `mostrarResultado()`, `lanzarConfeti()` y `limpiarResultado()` manejan las animaciones de victoria y derrota.
+
+## Animaciones de resultado
+
+Al terminar la partida se muestra un sello sobre la horca:
+
+- **Ganaste:** aparece el sello «¡Ganaste!», la horca se desvanece y cae confeti de tinta.
+- **Perdiste:** aparece el sello «Perdiste», la tarjeta vibra y el monigote se balancea con fuerza hasta quedar quieto. La palabra se revela en gris.
+
+En el código: `mostrarResultado()` decide qué animación lanzar (solo una vez por partida), `lanzarConfeti()` crea las piezas y `limpiarResultado()` lo deja todo listo para la siguiente partida. Los estilos están en la sección «resultado» de `ahorcado.css`.
 
 ## Personalización rápida
 

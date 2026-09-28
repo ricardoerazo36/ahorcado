@@ -74,5 +74,44 @@ svg.gallows{width:100%;max-width:340px;height:auto;display:block;margin:6px auto
 }
 .btn:hover{background:var(--ink);color:var(--paper)}
 
+/* ----- resultado: sello, confeti y efectos ----- */
+.game{overflow:hidden}
+.result{
+  position:absolute;left:24%;top:40%;z-index:5;pointer-events:none;opacity:0;
+  padding:8px 22px;border:3px solid var(--ink);background:rgba(247,246,242,.92);
+  font-family:'Fraunces',serif;font-size:clamp(24px,5vw,40px);letter-spacing:.04em;
+  transform:translate(-50%,-50%) rotate(-8deg);
+}
+.result.lose{color:var(--ink-soft);border-color:var(--ink-soft);border-style:double;border-width:6px}
+.result.show{animation:stamp .6s cubic-bezier(.2,.9,.3,1.3) both}
+@keyframes stamp{
+  from{opacity:0;transform:translate(-50%,-50%) rotate(-8deg) scale(2.2)}
+  60%{opacity:1}
+  to{opacity:1;transform:translate(-50%,-50%) rotate(-8deg) scale(1)}
+}
+@media(max-width:640px){.result{left:50%;top:26%}}
+
+/* victoria: la horca se desvanece y cae confeti */
+svg.gallows{transition:opacity .8s ease}
+.game.won svg.gallows{opacity:.12}
+.confeti{
+  position:absolute;top:-16px;z-index:4;pointer-events:none;background:var(--ink);
+  animation:caida linear forwards;
+}
+@keyframes caida{
+  to{transform:translateY(calc(100vh + 40px)) rotate(540deg);opacity:.2}
+}
+
+/* derrota: la tarjeta vibra y el monigote se balancea con fuerza hasta quedar quieto */
+.game.lost .pendulum{animation:balanceo 3.2s ease-out forwards}
+@keyframes balanceo{
+  0%{transform:rotate(14deg)}
+  20%{transform:rotate(-11deg)}
+  40%{transform:rotate(7deg)}
+  60%{transform:rotate(-4deg)}
+  80%{transform:rotate(2deg)}
+  100%{transform:rotate(0deg)}
+}
+
 /* ----- accesibilidad ----- */
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.result.show{opacity:1}}

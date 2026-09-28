@@ -94,7 +94,8 @@ function construirTeclas(){
 
 function actualizar(fallo){
   // horca
-  dibujarHorca(PIEZAS_POR_ERROR[INTENTOS_INICIALES - intentos]);
+  const n = PIEZAS_POR_ERROR[INTENTOS_INICIALES - intentos];
+  if(n !== piezasMostradas) dibujarHorca(n);
   if(fallo){ svg.classList.remove('shake'); void svg.getBoundingClientRect(); svg.classList.add('shake'); }
   // intentos
   dotsEl.innerHTML = '';
@@ -132,11 +133,57 @@ function jugar(entrada){
   msgEl.textContent = ingresarLetra(entrada);
   ultima = letrasUsadas.length > antes ? entrada.toLowerCase() : '';
   actualizar(intentos < intentosAntes);
+  mostrarResultado();
+}
+
+/* ----- animación de victoria / derrota ----- */
+const gameEl = document.querySelector('.game');
+const resultEl = document.getElementById('result');
+let resultadoMostrado = false;
+
+function mostrarResultado(){
+  if(resultadoMostrado || !(haGanado() || haPerdido())) return;
+  resultadoMostrado = true;
+  const gano = haGanado();
+  resultEl.textContent = gano ? '¡Ganaste!' : 'Perdiste';
+  resultEl.className = 'result show ' + (gano ? 'win' : 'lose');
+  if(gano){
+    gameEl.classList.add('won');
+    lanzarConfeti();
+  } else {
+    gameEl.classList.add('lost');
+    gameEl.classList.remove('shake'); void gameEl.getBoundingClientRect(); gameEl.classList.add('shake');
+  }
+}
+
+function lanzarConfeti(){
+  for(let i = 0; i < 36; i++){
+    const c = document.createElement('span');
+    c.className = 'confeti';
+    const w = 4 + Math.random() * 6;
+    c.style.left = Math.random() * 100 + '%';
+    c.style.width = w + 'px';
+    c.style.height = (Math.random() < .5 ? w : w * 3) + 'px';
+    c.style.borderRadius = Math.random() < .5 ? '50%' : '0';
+    c.style.opacity = (0.5 + Math.random() * .5).toFixed(2);
+    c.style.animationDuration = (2.2 + Math.random() * 1.8) + 's';
+    c.style.animationDelay = (Math.random() * .8) + 's';
+    gameEl.appendChild(c);
+    setTimeout(() => c.remove(), 5000);
+  }
+}
+
+function limpiarResultado(){
+  resultadoMostrado = false;
+  resultEl.className = 'result';
+  gameEl.classList.remove('won', 'lost', 'shake');
+  document.querySelectorAll('.confeti').forEach(c => c.remove());
 }
 
 function nuevaPartida(){
   reiniciarJuego();
-  ultima = ''; piezasMostradas = 0;
+  limpiarResultado();
+  ultima = ''; piezasMostradas = -1;
   msgEl.textContent = 'Elige una letra.';
   construirTeclas();
   actualizar(false);
